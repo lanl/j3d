@@ -1,0 +1,37 @@
+/*
+(c) 2025. Triad National Security, LLC. All rights reserved.
+This program was produced under U.S. Government contract 89233218CNA000001
+for Los Alamos National Laboratory (LANL), which is operated by Triad National
+Security, LLC for the U.S. Department of Energy/National Nuclear Security
+Administration. All rights in the program are reserved by Triad National Security,
+LLC, and the U.S. Department of Energy/National Nuclear Security Administration.
+The Government is granted for itself and others acting on its behalf a nonexclusive,
+paid-up, irrevocable worldwide license in this material to reproduce, prepare.
+derivative works, distribute copies to the public, perform publicly and display
+publicly, and to permit others to do so.
+*/
+
+/* This is a template for a generated header file (r3d-config.h)
+ * containing important J3D variables defined at compile time */
+
+#ifndef J3D_CONFIG_H_
+#define J3D_CONFIG_H_
+
+// J3D compile time variables
+#define J3D_MAX_VERTS @J3D_MAX_VERTS@
+
+#define J3D_MAX_EDGES @J3D_MAX_EDGES@
+
+#define J3D_MAX_ORDER @J3D_MAX_ORDER@
+
+// J2D compile time variables
+#define J2D_MAX_VERTS @J2D_MAX_VERTS@
+
+#define J2D_MAX_ORDER @J2D_MAX_ORDER@
+
+// Other compile time variables
+#ifndef J3D_ENABLE_Kokkos
+#cmakedefine J3D_ENABLE_Kokkos
+#endif
+
+#endif
