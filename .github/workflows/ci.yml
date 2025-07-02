@@ -1,0 +1,31 @@
+name: ubuntu
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: RelWithDebInfo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure with CMake
+        run: |
+          cmake -B "${{ github.workspace }}/build" \
+                -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DUSE_CLANG_FORMAT=OFF \
+                -DENABLE_UNIT_TESTS=ON \
+                -DJ3D_ENABLE_Kokkos=OFF
+
+      - name: Build
+        run: |
+          cmake --build "${{ github.workspace }}/build" --parallel $(nproc)
+
+      - name: Run tests
+        working-directory: ${{ github.workspace }}/build
+        run: ctest --output-on-failure
