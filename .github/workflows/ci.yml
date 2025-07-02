@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Configure with CMake
         run: |
-          cmake -B "${{ github.workspace }}/build" \
+          cmake -B build \
                 -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
                 -DUSE_CLANG_FORMAT=OFF \
                 -DENABLE_UNIT_TESTS=ON \
