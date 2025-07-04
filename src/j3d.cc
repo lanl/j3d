@@ -1014,20 +1014,18 @@ void j3d_get_moments_0(const j3d_poly* const poly, double* moments) {
   j3d_center(vc, vertbuffer, nverts);
 
   // for tracking visited edges
-  int emarks[J3D_MAX_VERTS * J3D_MAX_VERTS];
-  j3d_memset0(emarks, nverts * nverts * sizeof(int));
-
   // for intelligent graph walk
   // akin to what we saw in init poly quadratic
-  int prev_curr_to_next[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
   n = 1;
   while (n < ndiredges) {
     while (n != indexbuffer[v + 1]) {
-      prev_curr_to_next[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
+      nn_buffer[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
       ++n;
     }
-    prev_curr_to_next[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
+    nn_buffer[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
     ++v;
     ++n;
   }
@@ -1037,23 +1035,22 @@ void j3d_get_moments_0(const j3d_poly* const poly, double* moments) {
   // check if we have walked that face yet.
   // If not, walk it
   v = 0;
-  const int* const M_next = prev_curr_to_next;
   for (n = 0; n < ndiredges; ++n) {
     if (n == indexbuffer[v + 1]) {
       ++v;
     }
     // check if we encountered this face
-    if (emarks[v * nverts + diredgebuffer[n]]) {
+    if (nn_buffer[v * nverts + diredgebuffer[n]] < 0) {
       continue;
     }
 
     // if this face hasn't been visited then fan it out
     vprev = v;
     vcurr = diredgebuffer[n];
-    vnext = M_next[vprev * nverts + vcurr];
+    vnext = nn_buffer[vprev * nverts + vcurr];
     j3d_memcpy(v0, vertbuffer[vprev], 3 * sizeof(double));
     j3d_memcpy(v1, vertbuffer[vcurr], 3 * sizeof(double));
-    emarks[v * nverts + vcurr] = 1;
+    nn_buffer[v * nverts + vcurr] = -1;
 
     // shift point we are "fanning"
     // from
@@ -1087,11 +1084,11 @@ void j3d_get_moments_0(const j3d_poly* const poly, double* moments) {
 
       vprev = vcurr;
       vcurr = vnext;
-      vnext = M_next[vprev * nverts + vcurr];
-      emarks[vprev * nverts + vcurr] = 1;
+      vnext = nn_buffer[vprev * nverts + vcurr];
+      nn_buffer[vprev * nverts + vcurr] = -1;
       j3d_memcpy(v1, v2, 3 * sizeof(double));
     }
-    emarks[vcurr * nverts + vnext] = 1;
+    nn_buffer[vcurr * nverts + vnext] = -1;
   }
   moments[0] /= 6.0;
 }
@@ -1129,20 +1126,18 @@ void j3d_get_moments_1(const j3d_poly* const poly, double* moments) {
   j3d_center(vc, vertbuffer, nverts);
 
   // for tracking visited edges
-  int emarks[J3D_MAX_VERTS * J3D_MAX_VERTS];
-  j3d_memset0(emarks, nverts * nverts * sizeof(int));
-
   // for intelligent graph walk
   // akin to what we saw in init poly quadratic
-  int prev_curr_to_next[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
   n = 1;
   while (n < ndiredges) {
     while (n != indexbuffer[v + 1]) {
-      prev_curr_to_next[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
+      nn_buffer[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
       ++n;
     }
-    prev_curr_to_next[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
+    nn_buffer[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
     ++v;
     ++n;
   }
@@ -1152,23 +1147,22 @@ void j3d_get_moments_1(const j3d_poly* const poly, double* moments) {
   // check if we have walked that face yet.
   // If not, walk it
   v = 0;
-  const int* const M_next = prev_curr_to_next;
   for (n = 0; n < ndiredges; ++n) {
     if (n == indexbuffer[v + 1]) {
       ++v;
     }
     // check if we encountered this face
-    if (emarks[v * nverts + diredgebuffer[n]]) {
+    if (nn_buffer[v * nverts + diredgebuffer[n]] < 0) {
       continue;
     }
 
     // if this face hasn't been visited then fan it out
     vprev = v;
     vcurr = diredgebuffer[n];
-    vnext = M_next[vprev * nverts + vcurr];
+    vnext = nn_buffer[vprev * nverts + vcurr];
     j3d_memcpy(v0, vertbuffer[vprev], 3 * sizeof(double));
     j3d_memcpy(v1, vertbuffer[vcurr], 3 * sizeof(double));
-    emarks[v * nverts + vcurr] = 1;
+    nn_buffer[v * nverts + vcurr] = -1;
 
     // shift point we are "fanning"
     // from
@@ -1207,11 +1201,11 @@ void j3d_get_moments_1(const j3d_poly* const poly, double* moments) {
 
       vprev = vcurr;
       vcurr = vnext;
-      vnext = M_next[vprev * nverts + vcurr];
+      vnext = nn_buffer[vprev * nverts + vcurr];
       j3d_memcpy(v1, v2, 3 * sizeof(double));
-      emarks[vprev * nverts + vcurr] = 1;
+      nn_buffer[vprev * nverts + vcurr] = -1;
     }
-    emarks[vcurr * nverts + vnext] = 1;
+    nn_buffer[vcurr * nverts + vnext] = -1;
   }
   moments[0] /= 6.0;
   moments[1] /= 24.0;
@@ -1266,20 +1260,18 @@ void j3d_get_moments_2(const j3d_poly* const poly, double* moments) {
   j3d_center(vc, vertbuffer, nverts);
 
   // for tracking visited edges
-  int emarks[J3D_MAX_VERTS * J3D_MAX_VERTS];
-  j3d_memset0(emarks, nverts * nverts * sizeof(int));
-
   // for intelligent graph walk
   // akin to what we saw in init poly quadratic
-  int prev_curr_to_next[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
   n = 1;
   while (n < ndiredges) {
     while (n != indexbuffer[v + 1]) {
-      prev_curr_to_next[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
+      nn_buffer[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
       ++n;
     }
-    prev_curr_to_next[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
+    nn_buffer[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
     ++v;
     ++n;
   }
@@ -1289,23 +1281,22 @@ void j3d_get_moments_2(const j3d_poly* const poly, double* moments) {
   // check if we have walked that face yet.
   // If not, walk it
   v = 0;
-  const int* const M_next = prev_curr_to_next;
   for (n = 0; n < ndiredges; ++n) {
     if (n == indexbuffer[v + 1]) {
       ++v;
     }
     // check if we encountered this face
-    if (emarks[v * nverts + diredgebuffer[n]]) {
+    if (nn_buffer[v * nverts + diredgebuffer[n]] < 0) {
       continue;
     }
 
     // if this face hasn't been visited then fan it out
     vprev = v;
     vcurr = diredgebuffer[n];
-    vnext = M_next[vprev * nverts + vcurr];
+    vnext = nn_buffer[vprev * nverts + vcurr];
     j3d_memcpy(v0, vertbuffer[vprev], 3 * sizeof(double));
     j3d_memcpy(v1, vertbuffer[vcurr], 3 * sizeof(double));
-    emarks[v * nverts + vcurr] = 1;
+    nn_buffer[v * nverts + vcurr] = -1;
 
     // shift point we are "fanning"
     // from
@@ -1353,11 +1344,11 @@ void j3d_get_moments_2(const j3d_poly* const poly, double* moments) {
 
       vprev = vcurr;
       vcurr = vnext;
-      vnext = M_next[vprev * nverts + vcurr];
+      vnext = nn_buffer[vprev * nverts + vcurr];
       j3d_memcpy(v1, v2, 3 * sizeof(double));
-      emarks[vprev * nverts + vcurr] = 1;
+      nn_buffer[vprev * nverts + vcurr] = -1;
     }
-    emarks[vcurr * nverts + vnext] = 1;
+    nn_buffer[vcurr * nverts + vnext] = -1;
   }
   moments[0] /= 6.0;
   moments[1] /= 24.0;
@@ -1424,20 +1415,18 @@ void j3d_get_moments_3(const j3d_poly* const poly, double* moments) {
   j3d_center(vc, vertbuffer, nverts);
 
   // for tracking visited edges
-  int emarks[J3D_MAX_VERTS * J3D_MAX_VERTS];
-  j3d_memset0(emarks, nverts * nverts * sizeof(int));
-
   // for intelligent graph walk
   // akin to what we saw in init poly quadratic
-  int prev_curr_to_next[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
   n = 1;
   while (n < ndiredges) {
     while (n != indexbuffer[v + 1]) {
-      prev_curr_to_next[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
+      nn_buffer[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
       ++n;
     }
-    prev_curr_to_next[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
+    nn_buffer[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
     ++v;
     ++n;
   }
@@ -1447,23 +1436,22 @@ void j3d_get_moments_3(const j3d_poly* const poly, double* moments) {
   // check if we have walked that face yet.
   // If not, walk it
   v = 0;
-  const int* const M_next = prev_curr_to_next;
   for (n = 0; n < ndiredges; ++n) {
     if (n == indexbuffer[v + 1]) {
       ++v;
     }
     // check if we encountered this face
-    if (emarks[v * nverts + diredgebuffer[n]]) {
+    if (nn_buffer[v * nverts + diredgebuffer[n]] < 0) {
       continue;
     }
 
     // if this face hasn't been visited then fan it out
     vprev = v;
     vcurr = diredgebuffer[n];
-    vnext = M_next[vprev * nverts + vcurr];
+    vnext = nn_buffer[vprev * nverts + vcurr];
     j3d_memcpy(v0, vertbuffer[vprev], 3 * sizeof(double));
     j3d_memcpy(v1, vertbuffer[vcurr], 3 * sizeof(double));
-    emarks[v * nverts + vcurr] = 1;
+    nn_buffer[v * nverts + vcurr] = -1;
 
     // shift point we are "fanning"
     // from
@@ -1567,11 +1555,11 @@ void j3d_get_moments_3(const j3d_poly* const poly, double* moments) {
 
       vprev = vcurr;
       vcurr = vnext;
-      vnext = M_next[vprev * nverts + vcurr];
+      vnext = nn_buffer[vprev * nverts + vcurr];
       j3d_memcpy(v1, v2, 3 * sizeof(double));
-      emarks[vprev * nverts + vcurr] = 1;
+      nn_buffer[vprev * nverts + vcurr] = -1;
     }
-    emarks[vcurr * nverts + vnext] = 1;
+    nn_buffer[vcurr * nverts + vnext] = -1;
   }
   moments[0] /= 6.0;
   moments[1] /= 24.0;
@@ -1671,10 +1659,6 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
   // compute center of poly for shifting
   j3d_center(vc, vertbuffer, nverts);
 
-  // for tracking visited edges
-  int emarks[J3D_MAX_VERTS * J3D_MAX_VERTS];
-  j3d_memset0(emarks, nverts * nverts * sizeof(int));
-
   // Storage for coefficients keep two layers of the pyramid of coefficients
   // Note: Uses twice as much space as needed, but indexing is faster this way
   int prevlayer = 0;
@@ -1684,17 +1668,19 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
   double D[2 * (J3D_MAX_ORDER + 1) * (J3D_MAX_ORDER + 1)];
   double C[2 * (J3D_MAX_ORDER + 1) * (J3D_MAX_ORDER + 1)];
 
+  // for tracking visited edges
   // for intelligent graph walk
   // akin to what we saw in init poly quadratic
-  int prev_curr_to_next[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
+  j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
   n = 1;
   while (n < ndiredges) {
     while (n != indexbuffer[v + 1]) {
-      prev_curr_to_next[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
+      nn_buffer[diredgebuffer[n] * nverts + v] = diredgebuffer[n - 1];
       ++n;
     }
-    prev_curr_to_next[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
+    nn_buffer[diredgebuffer[indexbuffer[v]] * nverts + v] = diredgebuffer[indexbuffer[v + 1] - 1];
     ++v;
     ++n;
   }
@@ -1704,13 +1690,12 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
   // check if we have walked that face yet.
   // If not, walk it
   v = 0;
-  const int* const M_next = prev_curr_to_next;
   for (n = 0; n < ndiredges; ++n) {
     if (n == indexbuffer[v + 1]) {
       ++v;
     }
     // check if we encountered this face
-    if (emarks[v * nverts + diredgebuffer[n]]) {
+    if (nn_buffer[v * nverts + diredgebuffer[n]] < 0) {
       continue;
     }
 
@@ -1718,10 +1703,10 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
     // initialize face looping and fan it out
     vprev = v;
     vcurr = diredgebuffer[n];
-    vnext = M_next[vprev * nverts + vcurr];
+    vnext = nn_buffer[vprev * nverts + vcurr];
     j3d_memcpy(v0, vertbuffer[vprev], 3 * sizeof(double));
     j3d_memcpy(v1, vertbuffer[vcurr], 3 * sizeof(double));
-    emarks[v * nverts + vcurr] = 1;
+    nn_buffer[v * nverts + vcurr] = -1;
 
     // shift point we are "fanning" from
     v0[0] = v0[0] - vc[0];
@@ -1799,11 +1784,11 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
 
       vprev = vcurr;
       vcurr = vnext;
-      vnext = M_next[vprev * nverts + vcurr];
+      vnext = nn_buffer[vprev * nverts + vcurr];
       j3d_memcpy(v1, v2, 3 * sizeof(double));
-      emarks[vprev * nverts + vcurr] = 1;
+      nn_buffer[vprev * nverts + vcurr] = -1;
     }
-    emarks[vcurr * nverts + vnext] = 1;
+    nn_buffer[vcurr * nverts + vnext] = -1;
   }
 
   // reuse C to recursively compute the leading multinomial coefficients
