@@ -16,7 +16,7 @@ project(j3d CXX)   # CXX needed for one of the tests
 # version
 set(J3D_VERSION_MAJOR 1)
 set(J3D_VERSION_MINOR 2)
-set(J3D_VERSION_PATCH 1)
+set(J3D_VERSION_PATCH 2)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # J3D compile time variables
