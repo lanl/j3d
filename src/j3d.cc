@@ -1013,9 +1013,10 @@ void j3d_get_moments_0(const j3d_poly* const poly, double* moments) {
   // compute center of poly for shifting
   j3d_center(vc, vertbuffer, nverts);
 
-  // for tracking visited edges
-  // for intelligent graph walk
-  // akin to what we saw in init poly quadratic
+  // this buffer is used to store the next vertex in the BRep
+  // walk given the current and previous nodes to mimic the
+  // half edge data structure, and to mark already visited
+  // edges by tagging them as -1
   int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
   j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
@@ -1125,9 +1126,10 @@ void j3d_get_moments_1(const j3d_poly* const poly, double* moments) {
   // compute center of poly for shifting
   j3d_center(vc, vertbuffer, nverts);
 
-  // for tracking visited edges
-  // for intelligent graph walk
-  // akin to what we saw in init poly quadratic
+  // this buffer is used to store the next vertex in the BRep
+  // walk given the current and previous nodes to mimic the
+  // half edge data structure, and to mark already visited
+  // edges by tagging them as -1
   int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
   j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
@@ -1259,9 +1261,10 @@ void j3d_get_moments_2(const j3d_poly* const poly, double* moments) {
   // compute center of poly for shifting
   j3d_center(vc, vertbuffer, nverts);
 
-  // for tracking visited edges
-  // for intelligent graph walk
-  // akin to what we saw in init poly quadratic
+  // this buffer is used to store the next vertex in the BRep
+  // walk given the current and previous nodes to mimic the
+  // half edge data structure, and to mark already visited
+  // edges by tagging them as -1
   int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
   j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
@@ -1414,9 +1417,10 @@ void j3d_get_moments_3(const j3d_poly* const poly, double* moments) {
   // compute center of poly for shifting
   j3d_center(vc, vertbuffer, nverts);
 
-  // for tracking visited edges
-  // for intelligent graph walk
-  // akin to what we saw in init poly quadratic
+  // this buffer is used to store the next vertex in the BRep
+  // walk given the current and previous nodes to mimic the
+  // half edge data structure, and to mark already visited
+  // edges by tagging them as -1
   int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
   j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
@@ -1668,9 +1672,10 @@ void j3d_get_moments_n(const j3d_poly* const poly, double* moments, int order) {
   double D[2 * (J3D_MAX_ORDER + 1) * (J3D_MAX_ORDER + 1)];
   double C[2 * (J3D_MAX_ORDER + 1) * (J3D_MAX_ORDER + 1)];
 
-  // for tracking visited edges
-  // for intelligent graph walk
-  // akin to what we saw in init poly quadratic
+  // this buffer is used to store the next vertex in the BRep
+  // walk given the current and previous nodes to mimic the
+  // half edge data structure, and to mark already visited
+  // edges by tagging them as -1
   int nn_buffer[J3D_MAX_VERTS * J3D_MAX_VERTS];
   j3d_memset0(nn_buffer, nverts * nverts * sizeof(int));
   v = 0;
