@@ -19,29 +19,35 @@ publicly, and to permit others to do so.
 #include "j3d.h"
 #include "j2d.h"
 
-#define ASSERT_INT_EQ(a, b) { \
-  if ((a) != (b)) { \
-    fprintf(stderr, "FAILURE: %d != %d in file %s on line %d.\n", \
-                    a, b, __FILE__, __LINE__); \
-    return EXIT_FAILURE; \
-  } \
-} \
+#define ASSERT_INT_EQ(a, b)                                                                        \
+  {                                                                                                \
+    if ((a) != (b)) {                                                                              \
+      fprintf(stderr, "FAILURE: %d != %d in file %s on line %d.\n", a, b, __FILE__, __LINE__);     \
+      return EXIT_FAILURE;                                                                         \
+    }                                                                                              \
+  }
 
-#define ASSERT_DOUBLE_EQ(a, b, tol) { \
-  if (fabs((a) - (b)) > (tol)) { \
-    fprintf(stderr, "FAILURE: %f != %f with a tolerance of %f in file %s on line %d.\n", \
-                    a, b, tol, __FILE__, __LINE__); \
-    return EXIT_FAILURE; \
-  } \
-} \
+#define ASSERT_DOUBLE_EQ(a, b, tol)                                                                \
+  {                                                                                                \
+    if (fabs((a) - (b)) > (tol)) {                                                                 \
+      fprintf(stderr,                                                                              \
+              "FAILURE: %f != %f with a tolerance of %f in file %s on line %d.\n",                 \
+              a,                                                                                   \
+              b,                                                                                   \
+              tol,                                                                                 \
+              __FILE__,                                                                            \
+              __LINE__);                                                                           \
+      return EXIT_FAILURE;                                                                         \
+    }                                                                                              \
+  }
 
-#define ASSERT_DOUBLE_LT(a, b) { \
-  if (!((a) < (b))) { \
-    fprintf(stderr, "FAILURE: %f !< %f in file %s on line %d.\n", \
-                    a, b, __FILE__, __LINE__); \
-    return EXIT_FAILURE; \
-  } \
-} \
+#define ASSERT_DOUBLE_LT(a, b)                                                                     \
+  {                                                                                                \
+    if (!((a) < (b))) {                                                                            \
+      fprintf(stderr, "FAILURE: %f !< %f in file %s on line %d.\n", a, b, __FILE__, __LINE__);     \
+      return EXIT_FAILURE;                                                                         \
+    }                                                                                              \
+  }
 
 ////////////////////////////
 /// COMPARISON UTILITIES ///
