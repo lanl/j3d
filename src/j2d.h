@@ -57,19 +57,18 @@ struct j2d_vec2 {
   double xy[2];
 
 #ifdef J3D_ENABLE_Kokkos
-KOKKOS_FUNCTION
-  j2d_vec2(){}
+  KOKKOS_FUNCTION
+  j2d_vec2() {}
 
-KOKKOS_FUNCTION
-  ~j2d_vec2(){}
+  KOKKOS_FUNCTION
+  ~j2d_vec2() {}
 
-KOKKOS_FUNCTION
+  KOKKOS_FUNCTION
   j2d_vec2& operator=(const j2d_vec2& v) {
     j2d_memcpy(this->xy, v.xy, 2 * sizeof(double));
     return *this;
   }
 #endif
-
 };
 
 /**
@@ -81,20 +80,19 @@ struct j2d_plane {
   double d;   /*!< Signed perpendicular distance to the origin. */
 
 #ifdef J3D_ENABLE_Kokkos
-KOKKOS_FUNCTION
-  j2d_plane(){}
+  KOKKOS_FUNCTION
+  j2d_plane() {}
 
-KOKKOS_FUNCTION
-  ~j2d_plane(){}
+  KOKKOS_FUNCTION
+  ~j2d_plane() {}
 
-KOKKOS_FUNCTION
+  KOKKOS_FUNCTION
   j2d_plane& operator=(const j2d_plane& pl) {
     this->d = pl.d;
     this->n = pl.n;
     return *this;
   }
 #endif
-
 };
 
 /**
@@ -197,7 +195,9 @@ double j2d_orient(const double* const va, const double* const vb, const double* 
 #ifdef J3D_ENABLE_Kokkos
 KOKKOS_FUNCTION
 #endif
-void j2d_poly_faces_from_verts(j2d_plane* faces, const j2d_vec2* const vertices, const int numverts);
+void j2d_poly_faces_from_verts(j2d_plane* faces,
+                               const j2d_vec2* const vertices,
+                               const int numverts);
 
 /**
  * \brief Initialize a simply-connected general polygeon from a list of vertices.

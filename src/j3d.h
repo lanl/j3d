@@ -57,23 +57,22 @@ void j3d_memset0(void* const ptr, const int n);
  * \struct j3d_vec3
  * \brief a 3-vector
  */
-struct j3d_vec3{
+struct j3d_vec3 {
   double xyz[3];
 
 #ifdef J3D_ENABLE_Kokkos
-KOKKOS_FUNCTION
-  j3d_vec3(){}
+  KOKKOS_FUNCTION
+  j3d_vec3() {}
 
-KOKKOS_FUNCTION
-  ~j3d_vec3(){}
+  KOKKOS_FUNCTION
+  ~j3d_vec3() {}
 
-KOKKOS_FUNCTION
+  KOKKOS_FUNCTION
   j3d_vec3& operator=(const j3d_vec3& v) {
     j3d_memcpy(this->xyz, v.xyz, 3 * sizeof(double));
     return *this;
   }
 #endif
-
 };
 
 /**
@@ -85,13 +84,13 @@ struct j3d_plane {
   double d;   /*!< Signed perpendicular distance to the origin. */
 
 #ifdef J3D_ENABLE_Kokkos
-KOKKOS_FUNCTION
-  j3d_plane(){}
+  KOKKOS_FUNCTION
+  j3d_plane() {}
 
-KOKKOS_FUNCTION
-  ~j3d_plane(){}
+  KOKKOS_FUNCTION
+  ~j3d_plane() {}
 
-KOKKOS_FUNCTION
+  KOKKOS_FUNCTION
   j3d_plane& operator=(const j3d_plane& pl) {
     this->n = pl.n;
     this->d = pl.d;
