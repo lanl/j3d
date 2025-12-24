@@ -354,14 +354,14 @@ int j3d_init_poly(j3d_poly* poly,
     start[vcur] = vnext;
   }
 
-  const int* const M_next = nn_buffer;
+  const int* const M_prev = nn_buffer;
   const int* const s_read = n_buffer;
   np = 0;
   for (v = 0; v < numverts; ++v) {
     vnext = s_read[v];
     do {
       diredgebuffer[np] = vnext;
-      vnext = M_next[v * numverts + vnext];
+      vnext = M_prev[v * numverts + vnext];
       ++np;
     } while (vnext != s_read[v]);
   }
@@ -471,14 +471,14 @@ int j3d_brep_to_poly(j3d_poly* poly,
     ++f;
   }
 
-  const int* const M_next = nn_buffer;
+  const int* const M_prev = nn_buffer;
   const int* const s_read = n_buffer;
   np = 0;
   for (v = 0; v < numverts; ++v) {
     vnext = s_read[v];
     do {
       diredgebuffer[np] = vnext;
-      vnext = M_next[v * numverts + vnext];
+      vnext = M_prev[v * numverts + vnext];
       ++np;
     } while (vnext != s_read[v]);
   }
