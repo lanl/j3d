@@ -1,7 +1,9 @@
 # <img src="doc/logo.png" alt="logo" width="100">
 
 J3D is a C library for fast and robust polyhedral intersections.<br>
-It is based on R3D but without the restriction of degree 3 nodes.
+It is based on R3D but without the restriction of degree 3 nodes.<br>
+A brief research note on J3D which was presented at International Meshing Roundtable 2025 can be found [here](https://internationalmeshingroundtable.com/assets/research-notes/imr33/2010-compressed.pdf).<br>
+A write up with more details and benchmarks can be found [here](https://arxiv.org/abs/2610.34702).
 
 LANL O4945
 
